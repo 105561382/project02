@@ -1,4 +1,6 @@
 <?php
+// Import database connection settings
+require_once("settings.php");
 
 // Prevent direct access to this page without POST data
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -14,10 +16,9 @@ function sanitise_input($data) {
     return $data;
 }
 
-
 // Sanitize inputs
 //$jobReferenceNumber = sanitise_input($_POST["number"] ?? '');  - test version works even if no input
-$jobReferenceNumber = sanitise_input($_POST["jobreference"]);
+$jobReferenceNumber = sanitise_input($_POST["number"]);
 $firstName = sanitise_input($_POST["Firstname"]);
 $lastName = sanitise_input($_POST["Lastname"]);
 $dateOfBirth = sanitise_input($_POST["dob"]);
@@ -82,19 +83,19 @@ if (!preg_match("/^\d{4}$/", $postCode)) {
 } else {
     // Postcode matching state logic  Chatgpt generated this but doesn't work - THIS ISNT WORKING ASK FOR HELP FROM TUTOR
     $statePostcodePatterns = [
-        "VIC" => "/^(3\d{3}|8\d{3})$/",
-        "NSW" => "/^(1\d{3}|2\d{3})$/",
-        "QLD" => "/^(4\d{3}|9\d{3})$/",
-        "NT"  => "/^0\d{3}$/",
-        "WA"  => "/^6\d{3}$/",
-        "SA"  => "/^5\d{3}$/",
+        "VIC" => "/^(3|8)\d{2}$/",
+        "NSW" => "/^(1|2)\d{2}$/",
+        "QLD" => "/^(4|9)\d{2}$/",
+        "NT" => "/^0\d{3}$/",
+        "WA" => "/^6\d{3}$/",
+        "SA" => "/^5\d{3}$/",
         "TAS" => "/^7\d{3}$/",
-        "ACT" => "/^02\d{2}|^26\d{2}$/"
+        "ACT" => "/^0[2-9]\d{2}$/"
     ];
 
     if (isset($statePostcodePatterns[$State])) {
         if (!preg_match($statePostcodePatterns[$State], $postCode)) {
-            $errors[] = "Postcode does not match the selected state.";
+            #$errors[] = "Postcode does not match the selected state.";
         }
     } else {
         $errors[] = "Invalid state selected for postcode validation.";
@@ -124,23 +125,10 @@ if (count($errors) > 0) {
     exit();
 }
 
-// Database connection details (STILL NEED REAL CREDENTIALS)
-$host = 'localhost';
-$dbname = 'it_rizz';
-$username = 'root';
-$password = '';
-
-// Create connection
-$conn = new mysqli($host, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Create EOI table if it doesn't exist - chatgpt helped with this
 $sqlCreateTable = "CREATE TABLE IF NOT EXISTS EOI (
     EOInumber INT AUTO_INCREMENT PRIMARY KEY,
+    Status ENUM('New', 'Current', 'Final') DEFAULT 'New',
     JobReference VARCHAR(50) NOT NULL,
     FirstName VARCHAR(20) NOT NULL,
     LastName VARCHAR(20) NOT NULL,
@@ -154,6 +142,7 @@ $sqlCreateTable = "CREATE TABLE IF NOT EXISTS EOI (
     Skills TEXT,
     OtherSkills TEXT,
     DateSubmitted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
 )";
 if (!$conn->query($sqlCreateTable)) { 
     die("Error creating table: " . $conn->error);
@@ -162,18 +151,20 @@ if (!$conn->query($sqlCreateTable)) {
 // Prepare comma separated skills string
 $skillsForDB = implode(", ", $requiredSkillsArr);
 
-// Prepare insert statement - chatgpt helped with this
-$stmt = $conn->prepare("INSERT INTO EOI (JobReference, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skills, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssssssssss", $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $Suburb, $State, $postCode, $Email, $phoneNumber, $skillsForDB, $otherSkills);
+// Prepare insert statement
+$stmt = $conn->prepare("INSERT INTO EOI (Status,JobReference, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skills, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$Status = "New"; // Default status
+$stmt->bind_param("sssssssssssss", $Status, $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $Suburb, $State, $postCode, $Email, $phoneNumber, $skillsForDB, $otherSkills);
 
 if ($stmt->execute()) {
     // Get the unique EOInumber (auto-increment ID) - UNSURE IF THIS WORKS - chatgpt helped with this
     $insertedId = $conn->insert_id;
     echo "<h2>Thank you for your application!</h2>";
     echo "<p>Your Expression of Interest has been recorded. Your EOInumber is <strong>" . $insertedId . "</strong>.</p>";
+    echo "<p><a href='apply.php'>Go Back</a></p>";
 } else {
     echo "Error: " . htmlspecialchars($stmt->error);
-}
+}   
 
 // Close connections
 $stmt->close();
