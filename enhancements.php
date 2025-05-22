@@ -3,7 +3,7 @@ session_start();
 require_once("settings.php");
 $conn = mysqli_connect($host, $user, $password, $database);
 if (!$conn) {
-  error_log("Database connection failed: " . mysqli_connect_error());
+  error_log("Database connection failed: " . mysqli_connect_error());//used chatgpt to add error log
     die("Database connection failed: ". mysqli_connect_error());
 }
 

@@ -15,8 +15,6 @@ function sanitise_input($data) {
 }
 
 
-
-=======
 // Sanitize inputs
 //$jobReferenceNumber = sanitise_input($_POST["number"] ?? '');  - test version works even if no input
 $jobReferenceNumber = sanitise_input($_POST["number"]);
@@ -84,14 +82,14 @@ if (!preg_match("/^\d{4}$/", $postCode)) {
 } else {
     // Postcode matching state logic  Chatgpt generated this but doesn't work - THIS ISNT WORKING ASK FOR HELP FROM TUTOR
     $statePostcodePatterns = [
-        "VIC" => "/^(3|8)\d{2}$/",
-        "NSW" => "/^(1|2)\d{2}$/",
-        "QLD" => "/^(4|9)\d{2}$/",
-        "NT" => "/^0\d{3}$/",
-        "WA" => "/^6\d{3}$/",
-        "SA" => "/^5\d{3}$/",
+        "VIC" => "/^(3\d{3}|8\d{3})$/",
+        "NSW" => "/^(1\d{3}|2\d{3})$/",
+        "QLD" => "/^(4\d{3}|9\d{3})$/",
+        "NT"  => "/^0\d{3}$/",
+        "WA"  => "/^6\d{3}$/",
+        "SA"  => "/^5\d{3}$/",
         "TAS" => "/^7\d{3}$/",
-        "ACT" => "/^0[2-9]\d{2}$/"
+        "ACT" => "/^02\d{2}|^26\d{2}$/"
     ];
 
     if (isset($statePostcodePatterns[$State])) {
@@ -181,4 +179,3 @@ if ($stmt->execute()) {
 $stmt->close();
 $conn->close();
 ?>
->>>>>>> de1ad43767738a4f4ff5ea52731d397d41ebcf67
