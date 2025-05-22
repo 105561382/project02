@@ -19,7 +19,7 @@
   <form action="process_eoi.php" method="post" novalidate="novalidate">
 
     <label for="jobreference">JOB REFERENCE</label>
-    <select name="number" id="jobreference" required>
+    <select name="jobreference" id="jobreference" required>
       <option value="">select</option>
       <option value="Network Administrator 101">Network Administrator-101</option>
       <option value="Cybersecurity Specialist 102">Cybersecurity Specialist-102</option>

@@ -17,7 +17,7 @@ function sanitise_input($data) {
 
 // Sanitize inputs
 //$jobReferenceNumber = sanitise_input($_POST["number"] ?? '');  - test version works even if no input
-$jobReferenceNumber = sanitise_input($_POST["number"]);
+$jobReferenceNumber = sanitise_input($_POST["jobreference"]);
 $firstName = sanitise_input($_POST["Firstname"]);
 $lastName = sanitise_input($_POST["Lastname"]);
 $dateOfBirth = sanitise_input($_POST["dob"]);
