@@ -1,14 +1,9 @@
 <?php
-// Import database connection settings
-require_once("settings.php");
-
-// Prevent direct access to this page without POST data
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: apply.php");
     exit();
 }
 
-// Sanitisation function
 function sanitise_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -16,21 +11,18 @@ function sanitise_input($data) {
     return $data;
 }
 
-// Sanitize inputs
-//$jobReferenceNumber = sanitise_input($_POST["number"] ?? '');  - test version works even if no input
-$jobReferenceNumber = sanitise_input($_POST["number"]);
-$firstName = sanitise_input($_POST["Firstname"]);
-$lastName = sanitise_input($_POST["Lastname"]);
+$JobReferenceNumber = sanitise_input($_POST["number"]);
+$FirstName = sanitise_input($_POST["Firstname"]);
+$LastName = sanitise_input($_POST["Lastname"]);
 $dateOfBirth = sanitise_input($_POST["dob"]);
-$streetAddress = sanitise_input($_POST["streetaddress"]);
-$Suburb = sanitise_input($_POST["suburb"]);
+$StreetAddress = sanitise_input($_POST["streetaddress"]);
+$SuburbTown = sanitise_input($_POST["suburb"]);
 $State = sanitise_input($_POST["state"]);
-$postCode = sanitise_input($_POST["postcode"]);
-$Email = sanitise_input($_POST["email"]);
-$phoneNumber = sanitise_input($_POST["phonenumber"]);
-$otherSkills = sanitise_input($_POST["description"]);
+$Postcode = sanitise_input($_POST["postcode"]);
+$EmailAddress = sanitise_input($_POST["email"]);
+$PhoneNumber = sanitise_input($_POST["phonenumber"]);
+$OtherSkills = sanitise_input($_POST["description"]);
 
-// Collect skills from individual checkbox inputs
 $skillsList = [
     "NetworkingProtocols",
     "HardwareKnowledge",
@@ -47,29 +39,27 @@ foreach ($skillsList as $skill) {
     }
 }
 
-// Validation errors array
 $errors = [];
 
-// Validate required fields
-if (empty($jobReferenceNumber)) $errors[] = "Job reference is required."; //error for jobreference still working it out
+if (empty($JobReferenceNumber)) $errors[] = "Job reference is required.";
 
-if (empty($firstName) || !preg_match("/^[a-zA-Z]{1,20}$/", $firstName)) {
+if (empty($FirstName) || !preg_match("/^[a-zA-Z]{1,20}$/", $FirstName)) {
     $errors[] = "First name is required, max 20 alpha characters.";
 }
 
-if (empty($lastName) || !preg_match("/^[a-zA-Z]{1,20}$/", $lastName)) {
+if (empty($LastName) || !preg_match("/^[a-zA-Z]{1,20}$/", $LastName)) {
     $errors[] = "Last name is required, max 20 alpha characters.";
 }
 
 if (empty($dateOfBirth) || !preg_match("/^\d{4}-\d{2}-\d{2}$/", $dateOfBirth)) {
-    $errors[] = "Date of birth is required and must be valid (YYYY-MM-DD).";
+    $errors[] = "Date of birth is required and must be valid (DD-MM-YYYY).";
 }
 
-if (empty($streetAddress) || strlen($streetAddress) > 40) {
+if (empty($StreetAddress) || strlen($StreetAddress) > 40) {
     $errors[] = "Street address is required, max 40 characters.";
 }
 
-if (empty($Suburb) || strlen($Suburb) > 40) {
+if (empty($SuburbTown) || strlen($SuburbTown) > 40) {
     $errors[] = "Suburb/town is required, max 40 characters.";
 }
 
@@ -78,35 +68,34 @@ if (empty($State) || !in_array($State, $validStates)) {
     $errors[] = "State is required and must be a valid state.";
 }
 
-if (!preg_match("/^\d{4}$/", $postCode)) {
+if (!preg_match("/^\d{4}$/", $Postcode)) {
     $errors[] = "Postcode must be exactly 4 digits.";
 } else {
-    // Postcode matching state logic  Chatgpt generated this but doesn't work - THIS ISNT WORKING ASK FOR HELP FROM TUTOR
     $statePostcodePatterns = [
-        "VIC" => "/^(3|8)\d{2}$/",
-        "NSW" => "/^(1|2)\d{2}$/",
-        "QLD" => "/^(4|9)\d{2}$/",
+        "VIC" => "/^(3|8)\d{3}$/",
+        "NSW" => "/^(1|2)\d{3}$/",
+        "QLD" => "/^(4|9)\d{3}$/",
         "NT" => "/^0\d{3}$/",
         "WA" => "/^6\d{3}$/",
         "SA" => "/^5\d{3}$/",
         "TAS" => "/^7\d{3}$/",
-        "ACT" => "/^0[2-9]\d{2}$/"
+        "ACT" => "/^0[2-9]\d{3}$/"
     ];
 
     if (isset($statePostcodePatterns[$State])) {
-        if (!preg_match($statePostcodePatterns[$State], $postCode)) {
-            #$errors[] = "Postcode does not match the selected state.";
+        if (!preg_match($statePostcodePatterns[$State], $Postcode)) {
+            $errors[] = "Postcode does not match the selected state.";
         }
     } else {
         $errors[] = "Invalid state selected for postcode validation.";
     }
 }
 
-if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($EmailAddress, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Valid email is required.";
 }
 
-if (!preg_match("/^[0-9\s]{8,12}$/", $phoneNumber)) {
+if (!preg_match("/^[0-9\s]{8,12}$/", $PhoneNumber)) {
     $errors[] = "Phone number must be 8 to 12 digits or spaces.";
 }
 
@@ -114,8 +103,6 @@ if (count($requiredSkillsArr) == 0) {
     $errors[] = "At least one required skill must be selected.";
 }
 
-
-// If there are validation errors, display them and stop execution 
 if (count($errors) > 0) {
     echo "<h2>Validation Errors:</h2><ul>";
     foreach ($errors as $error) {
@@ -125,48 +112,58 @@ if (count($errors) > 0) {
     exit();
 }
 
-// Create EOI table if it doesn't exist - chatgpt helped with this
+
+
+$host = 'localhost';
+$dbname = 'it_rizz';
+$username = 'root';
+$password = '';
+
+
+$conn = new mysqli($host, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 $sqlCreateTable = "CREATE TABLE IF NOT EXISTS EOI (
     EOInumber INT AUTO_INCREMENT PRIMARY KEY,
-    Status ENUM('New', 'Current', 'Final') DEFAULT 'New',
-    JobReference VARCHAR(50) NOT NULL,
+    JobReferenceNumber VARCHAR(50) NOT NULL,
     FirstName VARCHAR(20) NOT NULL,
     LastName VARCHAR(20) NOT NULL,
     DateOfBirth DATE NOT NULL,
     StreetAddress VARCHAR(40) NOT NULL,
-    Suburb VARCHAR(40) NOT NULL,
+    SuburbTown VARCHAR(40) NOT NULL,
     State VARCHAR(5) NOT NULL,
     Postcode VARCHAR(4) NOT NULL,
-    Email VARCHAR(255) NOT NULL,
+    EmailAddress VARCHAR(255) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
-    Skills TEXT,
+    Skill1 VARCHAR(50),
+    Skill2 VARCHAR(50),
+    Skill3 VARCHAR(50),
+    Skill4 VARCHAR(50),
+    Skill5 VARCHAR(50),
     OtherSkills TEXT,
     DateSubmitted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
 )";
 if (!$conn->query($sqlCreateTable)) { 
     die("Error creating table: " . $conn->error);
 }
 
-// Prepare comma separated skills string
-$skillsForDB = implode(", ", $requiredSkillsArr);
+$skillVars = array_pad($requiredSkillsArr, 5, null);
+list($skill1, $skill2, $skill3, $skill4, $skill5) = $skillVars;
 
-// Prepare insert statement
-$stmt = $conn->prepare("INSERT INTO EOI (Status,JobReference, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skills, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$Status = "New"; // Default status
-$stmt->bind_param("sssssssssssss", $Status, $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $Suburb, $State, $postCode, $Email, $phoneNumber, $skillsForDB, $otherSkills);
+$stmt = $conn->prepare("INSERT INTO eoi (JobReferenceNumber, FirstName, LastName, DateOfBirth, StreetAddress, SuburbTown, State, Postcode, EmailAddress, PhoneNumber, Skill1, Skill2, Skill3, Skill4, Skill5, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("ssssssssssssssss", $JobReferenceNumber, $FirstName, $LastName, $dateOfBirth, $StreetAddress, $SuburbTown, $State, $Postcode, $EmailAddress, $PhoneNumber, $skill1, $skill2, $skill3, $skill4, $skill5, $OtherSkills);
 
 if ($stmt->execute()) {
-    // Get the unique EOInumber (auto-increment ID) - UNSURE IF THIS WORKS - chatgpt helped with this
     $insertedId = $conn->insert_id;
     echo "<h2>Thank you for your application!</h2>";
     echo "<p>Your Expression of Interest has been recorded. Your EOInumber is <strong>" . $insertedId . "</strong>.</p>";
-    echo "<p><a href='apply.php'>Go Back</a></p>";
 } else {
     echo "Error: " . htmlspecialchars($stmt->error);
-}   
+}
 
-// Close connections
 $stmt->close();
 $conn->close();
 ?>
