@@ -1,7 +1,13 @@
 <?php
     require_once("settings.php");
 
+    // Prevent direct access to this page without GET data
+    if ($_SERVER["REQUEST_METHOD"] !== "GET") {
+        header("Location: index.php");
+        exit();
+    }
 
+    // Recallable functions to display input forms
     function JobReferenceInput()
     {
         echo '<link rel="stylesheet" href="styles/styles.css">';
@@ -64,12 +70,13 @@
     // Start output buffering
     ob_start();
 
+    // Qeuries the database for all EOIs and displays then in a table format
     if(isset($_GET['ListAllEOIs'])) {
         $query = "SELECT * FROM eoi";
         $result = mysqli_query($conn, $query);
         if ($result) {
             echo '<link rel="stylesheet" href="styles/styles.css">';
-            echo "<section><h1>All EOIs</h1><table id='EOITable'>";
+            echo "<section><h1>All EOIs</h1><div id='EOISection'><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
                 <th>Other Skills</th><th>Date Submitted</th></tr>";
@@ -77,7 +84,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReference'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -92,21 +99,24 @@
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
             }
-            echo "</table></section>";
+            echo "</table></div></section>";
         } else {
             echo "<p>Error retrieving EOIs: " . mysqli_error($conn) . "</p>";
         }
+
+    // If the user has selected to list EOIs send to the JobReferenceInput function
     } elseif (isset($_GET['ListPositionEOIs'])) {
         JobReferenceInput();
     
+    // Once the user has chosen a position number, display the EOIs that match
     } elseif (isset($_GET['number'])) {
         $number = mysqli_real_escape_string($conn, $_GET['number']);
-        $sql = "SELECT * FROM eoi WHERE JobReference = '$number'";
+        $sql = "SELECT * FROM eoi WHERE jobReferenceNumber = '$number'";
         $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             echo '<link rel="stylesheet" href="styles/styles.css">';
-            echo "<section><h1>All " . $number . " EOIs.</h1><table id='EOITable'>";
+            echo "<section><h1>All " . $number . " EOIs.</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
                 <th>Other Skills</th><th>Date Submitted</th></tr>";
@@ -114,7 +124,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReference'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -129,12 +139,13 @@
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
             }
-            echo "</table></section>";
+            echo "</table></div></section>";
 
             if (isset($_GET['delete'])){
                 echo "<form method='GET' action='retrieve_eoi.php'>
                     <label for='JobReference'>Delete EOIs with Job Reference:</label>
                     <input type='text' name='JobReference' id='JobReference' value='$number'>
+                    <input type='hidden' name='delete' value='true'>
                     <button type='submit'>Delete</button></form>";
             }
     
@@ -142,9 +153,11 @@
             JobReferenceInput();
             echo "🚫 No EOIs of that number.";
         }
+    // If the user has selected to list EOIs by first and/or last name, send to the FirstLastNameInput function
     } elseif (isset($_GET['ListApplicantEOIs'])) {
         FirstLastNameInput();
         
+    // Once the user has chosen a first and/or last name, display the EOIs that match either or both
     } elseif (isset($_GET['FirstName']) || isset($_GET['LastName'])) {
         $firstName = mysqli_real_escape_string($conn, $_GET['FirstName']);
         $lastName = mysqli_real_escape_string($conn, $_GET['LastName']);
@@ -168,7 +181,7 @@
         
         if (mysqli_num_rows($result) > 0) {
             echo '<link rel="stylesheet" href="styles/styles.css">';
-            echo "<section><h1>All EOIs for " . $firstName . " " . $lastName . ".</h1><table id='EOITable'>";
+            echo "<section><h1>All EOIs for " . $firstName . " " . $lastName . "</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
                 <th>Other Skills</th><th>Date Submitted</th></tr>";
@@ -176,7 +189,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReference'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -191,26 +204,31 @@
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
             }
-            echo "</table></section>";
+            echo "</table></div></section>";
     
         } else {
             FirstLastNameInput();
             echo "🚫 No EOIs for this applicant exist.";
         }
+    
+    // If the user has selected to delete EOIs, send to the DeleteInput function
     } elseif (isset($_GET['DeletePositionEOIs'])) {
         DeleteInput();
+
+    // If the user has selected to change the status of an EOI, send to the EOINumberInput function
     } elseif (isset($_GET['ChangeEOIStatus'])) {
         EOINumberInput();
-
+    
+    // Once the user has chosen an EOI number, display the EOIs that match
     } elseif (isset($_GET['EOInumber'])) {
-        $Mode = mysqli_real_escape_string($conn, $_GET['Mode']);
+
         $EOInumber = mysqli_real_escape_string($conn, $_GET['EOInumber']);
         $sql = "SELECT * FROM eoi WHERE EOInumber = '$EOInumber'";
         $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             echo '<link rel="stylesheet" href="styles/styles.css">';
-            echo "<section><h1>All EOIs for EOI number " . $EOInumber . ".</h1><table id='EOITable'>";
+            echo "<section><h1>All EOIs for EOI number " . $EOInumber . ".</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
                 <th>Other Skills</th><th>Date Submitted</th></tr>";
@@ -218,7 +236,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReference'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -233,7 +251,7 @@
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
             }
-            echo "</table></section>";
+            echo "</table></div></section>";
             
             echo "<form method='GET' action='retrieve_eoi.php'>
                     <label for='status'>Change Status:</label>
@@ -242,16 +260,17 @@
                         <option value='Current'>Current</option>
                         <option value='Final'>Final</option>
                     </select>
-                    <input type='hidden' name='EOInumber' value='$EOInumber'>
+                    <input type='hidden' name='SelectedEOInumber' value='$EOInumber'>
                     <button type='submit'>Update Status</button></form>";
         } else {
             EOINumberInput();
             echo "🚫 No EOIs for this EOI number exist.";
         }
-
-    } elseif(isset($_GET['status']) && isset($_GET['EOInumber'])) {
+    
+    // If the user has selected to change the status of an EOI, update the status in the database
+    } elseif(isset($_GET['status']) && isset($_GET['SelectedEOInumber'])) {
         $Status = mysqli_real_escape_string($conn, $_GET['status']);
-        $EOInumber = mysqli_real_escape_string($conn,$_GET['EOInumber']);
+        $EOInumber = mysqli_real_escape_string($conn,$_GET['SelectedEOInumber']);
         $sql = "UPDATE eoi SET Status = '$Status' WHERE EOInumber = '$EOInumber'";
         if (mysqli_query($conn, $sql)) {
             echo "<p>Status updated successfully.</p>";
@@ -259,23 +278,25 @@
             echo "<p>Error updating status: " . mysqli_error($conn) . "</p>";
         }
     
-    } elseif (isset($_GET['delete']) && isset($_GET['number'])) {
-        $number = mysqli_real_escape_string($conn, $_GET['number']);
-        $sql = "DELETE FROM eoi WHERE JobReference = '$number'";
+    // If the user has selected to delete EOIs, delete the EOIs with the specified job reference number
+    } elseif (isset($_GET['delete']) && isset($_GET['JobReference'])) {
+        $number = mysqli_real_escape_string($conn, $_GET['JobReference']);
+        $sql = "DELETE FROM eoi WHERE jobReferenceNumber = '$number'";
         if (mysqli_query($conn, $sql)) {
             echo "<p>EOIs deleted successfully.</p>";
         } else {
             echo "<p>Error deleting EOIs: " . mysqli_error($conn) . "</p>";
         }
 
+    // If the user has selected to delete EOIs by number, display the EOIs that match
     }  elseif (isset($_GET['DeleteNumber'])) {
         $number = mysqli_real_escape_string($conn, $_GET['DeleteNumber']);
-        $sql = "SELECT * FROM eoi WHERE JobReference = '$number'";
+        $sql = "SELECT * FROM eoi WHERE jobReferenceNumber = '$number'";
         $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             echo '<link rel="stylesheet" href="styles/styles.css">';
-            echo "<section><h1>All " . $number . " EOIs.</h1><table id='EOITable'>";
+            echo "<section><h1>All " . $number . " EOIs.</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
                 <th>Other Skills</th><th>Date Submitted</th></tr>";
@@ -283,7 +304,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReference'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -298,12 +319,13 @@
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
             }
-            echo "</table></section>";
+            echo "</table></div></section>";
 
 
             echo "<form method='GET' action='retrieve_eoi.php'>
                 <label for='JobReference'>Delete EOIs with Job Reference:</label>
                 <input type='text' name='JobReference' id='JobReference' value='$number'>
+                <input type='hidden' name='delete' value='true'>
                 <button type='submit'>Delete</button></form>";
 
         } else {

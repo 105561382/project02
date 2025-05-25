@@ -152,7 +152,7 @@ if (!$conn->query($sqlCreateTable)) {
 $skillsForDB = implode(", ", $requiredSkillsArr);
 
 // Prepare insert statement
-$stmt = $conn->prepare("INSERT INTO EOI (Status,JobReference, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skills, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO EOI (Status, jobReferenceNumber, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skills, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 $Status = "New"; // Default status
 $stmt->bind_param("sssssssssssss", $Status, $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $Suburb, $State, $postCode, $Email, $phoneNumber, $skillsForDB, $otherSkills);
 
