@@ -1,50 +1,81 @@
+
 <?php
-// Connect to database
-require_once('db_connect.php'); // assume this connects and assigns $conn
+    session_start();
+    ini_set('display_errors', 1);
 
-$username = $_POST['username'];
-$password = $_POST['password'];
+    // Set lockout parameters
+    $max_attempts = 3;
+    $lockout_time = 300; // seconds (5 minutes)
 
-$sql = "SELECT * FROM users WHERE username = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 1) {
-    $user = $result->fetch_assoc();
-
-    // Check if account is locked
-    if ($user['lockout_until'] && strtotime($user['lockout_until']) > time()) {
-        echo "Your account is locked. Try again later.";
-        exit;
+    // Initialize session variables if not set
+    if (!isset($_SESSION['login_attempts'])) {
+        $_SESSION['login_attempts'] = 0;
+    }
+    if (!isset($_SESSION['lockout_until'])) {
+        $_SESSION['lockout_until'] = 0;
     }
 
-    // Check password
-    if (password_verify($password, $user['password_hash'])) {
-        // Successful login
-        echo "Login successful!";
-        
-        // Reset failed attempts
-        $reset = $conn->prepare("UPDATE users SET failed_attempts = 0, lockout_until = NULL WHERE username = ?");
-        $reset->bind_param("s", $username);
-        $reset->execute();
-    } else {
-        // Failed login
-        $failedAttempts = $user['failed_attempts'] + 1;
-        $lockoutUntil = null;
+    // Check if user is locked out
+    if (time() < $_SESSION['lockout_until']) {
+        $remaining = $_SESSION['lockout_until'] - time();
+        echo "⏳ Too many failed login attempts. Please try again in " . ceil($remaining/60) . " minute(s).";
+        exit();
+    }
+?>
 
-        if ($failedAttempts >= 3) {
-            $lockoutUntil = date("Y-m-d H:i:s", strtotime("+15 minutes")); // lockout for 15 min
+<form method="post" action="">
+    <label for="username">Username:</label>
+    <input type="text" name="username" required>
+
+    <br>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" required>
+
+    <br>
+
+    <input type="submit" name="Login">
+</form>
+
+<?php
+    require_once("settings.php");
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if (!$conn) {
+            die("Database connection failed: " . mysqli_connect_error());
         }
 
-        $update = $conn->prepare("UPDATE users SET failed_attempts = ?, last_failed_login = NOW(), lockout_until = ? WHERE username = ?");
-        $update->bind_param("iss", $failedAttempts, $lockoutUntil, $username);
-        $update->execute();
+        // Use prepared statements to prevent SQL injection
+        $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ? AND password = ?");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ss", $username, $password);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $users = mysqli_fetch_assoc($result);
 
-        echo "Invalid credentials. " . ($lockoutUntil ? "Account locked for 15 minutes." : "");
+            if ($users) {
+                $_SESSION['username'] = $username;
+                $_SESSION['login_attempts'] = 0; // reset attempts on success
+                $_SESSION['lockout_until'] = 0;
+                header("Location: profile.php");
+                exit();
+            } else {
+                $_SESSION['login_attempts'] += 1;
+                if ($_SESSION['login_attempts'] >= $max_attempts) {
+                    $_SESSION['lockout_until'] = time() + $lockout_time;
+                    echo "⏳ Too many failed login attempts. Please try again later.";
+                } else {
+                    echo "❌ Incorrect username or password.";
+                    echo "<br>";
+                    echo "<a href='login.php'>Try again</a>";
+                }
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            echo "Database query error: " . mysqli_error($conn);
+        }
     }
-} else {
-    echo "User not found.";
-}
 ?>
