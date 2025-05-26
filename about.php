@@ -78,11 +78,11 @@
 		<section>
 			<dl>
 				<dt>George Salib</dt>
-				<dd>Created the about page and home page, worked on the CSS for the about page and layout, Responsible for Submission.</dd>
+				<dd>Created the about page and home page, worked on the CSS for the about page and layout,Modified the form validation  using php, Responsible for Submission.</dd>
 				<dt>Kevin Varghese</dt>
-				<dd>Created the application page and the css for it.</dd>
+				<dd>Created the application page and the css for it, Created a database, settings.php, include files.</dd>
 				<dt>Ethan Gibbons</dt>
-				<dd>Created the jobs page and css for it, also did home page css file, Jira Management.</dd>
+				<dd>Created the jobs page and css for it, also did home page css file, created Jobs table and manager.php file, Jira Management.</dd>
 			</dl>
 		</section>
 	</body>
