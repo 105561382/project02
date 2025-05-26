@@ -84,7 +84,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -94,7 +94,15 @@
                 echo "<td>" . $row['Postcode'] . "</td>";
                 echo "<td>" . $row['Email'] . "</td>";
                 echo "<td>" . $row['PhoneNumber'] . "</td>";
-                echo "<td>" . $row['Skills'] . "</td>";
+                if (!empty($row['Skill1'])) {
+                    echo "<td><ul>";
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($row["Skill$i"])) {
+                            echo "<li>" . $row["Skill$i"] . "</li>";
+                        }
+                    }
+                    echo "</ul></td>";
+                }
                 echo "<td>" . $row['OtherSkills'] . "</td>";
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
@@ -124,7 +132,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -134,7 +142,15 @@
                 echo "<td>" . $row['Postcode'] . "</td>";
                 echo "<td>" . $row['Email'] . "</td>";
                 echo "<td>" . $row['PhoneNumber'] . "</td>";
-                echo "<td>" . $row['Skills'] . "</td>";
+                if (!empty($row['Skill1'])) {
+                    echo "<td><ul>";
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($row["Skill$i"])) {
+                            echo "<li>" . $row["Skill$i"] . "</li>";
+                        }
+                    }
+                    echo "</ul></td>";
+                }
                 echo "<td>" . $row['OtherSkills'] . "</td>";
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
@@ -189,7 +205,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -199,7 +215,15 @@
                 echo "<td>" . $row['Postcode'] . "</td>";
                 echo "<td>" . $row['Email'] . "</td>";
                 echo "<td>" . $row['PhoneNumber'] . "</td>";
-                echo "<td>" . $row['Skills'] . "</td>";
+                if (!empty($row['Skill1'])) {
+                    echo "<td><ul>";
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($row["Skill$i"])) {
+                            echo "<li>" . $row["Skill$i"] . "</li>";
+                        }
+                    }
+                    echo "</ul></td>";
+                }
                 echo "<td>" . $row['OtherSkills'] . "</td>";
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
@@ -236,7 +260,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -246,7 +270,15 @@
                 echo "<td>" . $row['Postcode'] . "</td>";
                 echo "<td>" . $row['Email'] . "</td>";
                 echo "<td>" . $row['PhoneNumber'] . "</td>";
-                echo "<td>" . $row['Skills'] . "</td>";
+                if (!empty($row['Skill1'])) {
+                    echo "<td><ul>";
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($row["Skill$i"])) {
+                            echo "<li>" . $row["Skill$i"] . "</li>";
+                        }
+                    }
+                    echo "</ul></td>";
+                }
                 echo "<td>" . $row['OtherSkills'] . "</td>";
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
@@ -304,7 +336,7 @@
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
                 echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
                 echo "<td>" . $row['FirstName'] . "</td>";
                 echo "<td>" . $row['LastName'] . "</td>";
                 echo "<td>" . $row['DateOfBirth'] . "</td>";
@@ -314,7 +346,15 @@
                 echo "<td>" . $row['Postcode'] . "</td>";
                 echo "<td>" . $row['Email'] . "</td>";
                 echo "<td>" . $row['PhoneNumber'] . "</td>";
-                echo "<td>" . $row['Skills'] . "</td>";
+                if (!empty($row['Skill1'])) {
+                    echo "<td><ul>";
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($row["Skill$i"])) {
+                            echo "<li>" . $row["Skill$i"] . "</li>";
+                        }
+                    }
+                    echo "</ul></td>";
+                }
                 echo "<td>" . $row['OtherSkills'] . "</td>";
                 echo "<td>" . $row['DateSubmitted'] . "</td>";
                 echo "</tr>";
