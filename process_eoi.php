@@ -11,17 +11,17 @@ function sanitise_input($data) {
     return $data;
 }
 
-$JobReferenceNumber = sanitise_input($_POST["number"]);
-$FirstName = sanitise_input($_POST["Firstname"]);
-$LastName = sanitise_input($_POST["Lastname"]);
+$jobReferenceNumber = sanitise_input($_POST["number"]);
+$firstName = sanitise_input($_POST["Firstname"]);
+$lastName = sanitise_input($_POST["Lastname"]);
 $dateOfBirth = sanitise_input($_POST["dob"]);
-$StreetAddress = sanitise_input($_POST["streetaddress"]);
-$SuburbTown = sanitise_input($_POST["suburb"]);
-$State = sanitise_input($_POST["state"]);
-$Postcode = sanitise_input($_POST["postcode"]);
-$EmailAddress = sanitise_input($_POST["email"]);
-$PhoneNumber = sanitise_input($_POST["phonenumber"]);
-$OtherSkills = sanitise_input($_POST["description"]);
+$streetAddress = sanitise_input($_POST["streetaddress"]);
+$suburbTown = sanitise_input($_POST["suburb"]);
+$state = sanitise_input($_POST["state"]);
+$postcode = sanitise_input($_POST["postcode"]);
+$emailAddress = sanitise_input($_POST["email"]);
+$phoneNumber = sanitise_input($_POST["phonenumber"]);
+$otherSkills = sanitise_input($_POST["description"]);
 
 $skillsList = [
     "NetworkingProtocols",
@@ -41,13 +41,13 @@ foreach ($skillsList as $skill) {
 
 $errors = [];
 
-if (empty($JobReferenceNumber)) $errors[] = "Job reference is required.";
+if (empty($jobReferenceNumber)) $errors[] = "Job reference is required.";
 
-if (empty($FirstName) || !preg_match("/^[a-zA-Z]{1,20}$/", $FirstName)) {
+if (empty($firstName) || !preg_match("/^[a-zA-Z]{1,20}$/", $firstName)) {
     $errors[] = "First name is required, max 20 alpha characters.";
 }
 
-if (empty($LastName) || !preg_match("/^[a-zA-Z]{1,20}$/", $LastName)) {
+if (empty($lastName) || !preg_match("/^[a-zA-Z]{1,20}$/", $lastName)) {
     $errors[] = "Last name is required, max 20 alpha characters.";
 }
 
@@ -55,20 +55,20 @@ if (empty($dateOfBirth) || !preg_match("/^\d{4}-\d{2}-\d{2}$/", $dateOfBirth)) {
     $errors[] = "Date of birth is required and must be valid (DD-MM-YYYY).";
 }
 
-if (empty($StreetAddress) || strlen($StreetAddress) > 40) {
+if (empty($streetAddress) || strlen($streetAddress) > 40) {
     $errors[] = "Street address is required, max 40 characters.";
 }
 
-if (empty($SuburbTown) || strlen($SuburbTown) > 40) {
+if (empty($suburbTown) || strlen($suburbTown) > 40) {
     $errors[] = "Suburb/town is required, max 40 characters.";
 }
 
 $validStates = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"];
-if (empty($State) || !in_array($State, $validStates)) {
+if (empty($state) || !in_array($state, $validStates)) {
     $errors[] = "State is required and must be a valid state.";
 }
 
-if (!preg_match("/^\d{4}$/", $Postcode)) {
+if (!preg_match("/^\d{4}$/", $postcode)) {
     $errors[] = "Postcode must be exactly 4 digits.";
 } else {
     $statePostcodePatterns = [
@@ -82,8 +82,8 @@ if (!preg_match("/^\d{4}$/", $Postcode)) {
         "ACT" => "/^0[2-9]\d{3}$/"
     ];
 
-    if (isset($statePostcodePatterns[$State])) {
-        if (!preg_match($statePostcodePatterns[$State], $Postcode)) {
+    if (isset($statePostcodePatterns[$state])) {
+        if (!preg_match($statePostcodePatterns[$state], $postcode)) {
             $errors[] = "Postcode does not match the selected state.";
         }
     } else {
@@ -91,11 +91,11 @@ if (!preg_match("/^\d{4}$/", $Postcode)) {
     }
 }
 
-if (!filter_var($EmailAddress, FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Valid email is required.";
 }
 
-if (!preg_match("/^[0-9\s]{8,12}$/", $PhoneNumber)) {
+if (!preg_match("/^[0-9\s]{8,12}$/", $phoneNumber)) {
     $errors[] = "Phone number must be 8 to 12 digits or spaces.";
 }
 
@@ -112,13 +112,10 @@ if (count($errors) > 0) {
     exit();
 }
 
-
-
 $host = 'localhost';
 $dbname = 'it_rizz';
 $username = 'root';
 $password = '';
-
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
@@ -154,17 +151,17 @@ $skillVars = array_pad($requiredSkillsArr, 5, null);
 list($skill1, $skill2, $skill3, $skill4, $skill5) = $skillVars;
 
 // Prepare insert statement
-$stmt = $conn->prepare("INSERT INTO eoi (Status,JobReferenceNumber, FirstName, LastName, DateOfBirth, StreetAddress, Suburb, State, Postcode, Email, PhoneNumber, Skill1, Skill2, Skill3, Skill4, Skill5, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO eoi (Status, JobReferenceNumber, FirstName, LastName, DateOfBirth, StreetAddress, SuburbTown, State, Postcode, EmailAddress, PhoneNumber, Skill1, Skill2, Skill3, Skill4, Skill5, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
 }
-$Status = "New"; // Default status
-$stmt->bind_param("sssssssssssssssss", $Status, $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $Suburb, $State, $postCode, $Email, $phoneNumber, $skill1, $skill2, $skill3, $skill4, $skill5, $otherSkills);
+$STATUS = "New"; // Default status
+$stmt->bind_param("sssssssssssssssss", $STATUS, $jobReferenceNumber, $firstName, $lastName, $dateOfBirth, $streetAddress, $suburbTown, $state, $postcode, $emailAddress, $phoneNumber, $skill1, $skill2, $skill3, $skill4, $skill5, $otherSkills);
 
 if ($stmt->execute()) {
-    $insertedId = $conn->insert_id;
+    $EOInumber = $conn->insert_id;
     echo "<h2>Thank you for your application!</h2>";
-    echo "<p>Your Expression of Interest has been recorded. Your EOInumber is <strong>" . $insertedId . "</strong>.</p>";
+    echo "<p>Your Expression of Interest has been recorded. Your EOInumber is <strong>" . $EOInumber . "</strong>.</p>";
 } else {
     echo "Error: " . htmlspecialchars($stmt->error);
 }
