@@ -15,8 +15,8 @@
             <label for="jobReference">Enter Job Reference Number:</label>
             <select name="number" id="jobreference" required>
                 <option value="">select</option>
-                <option value="Network Administrator 101">Network Administrator-101</option>
-                <option value="Cybersecurity Specialist 102">Cybersecurity Specialist-102</option>
+                <option value="Network Administrato">Network Administrator-101</option>
+                <option value="Cybersecurity Specia">Cybersecurity Specialist-102</option>
             </select>
             <br>
             <br>
@@ -31,8 +31,8 @@
             <label for="jobReference">Enter Job Reference Number:</label>
             <select name="DeleteNumber" id="jobreference" required>
                 <option value="">select</option>
-                <option value="Network Administrator 101">Network Administrator-101</option>
-                <option value="Cybersecurity Specialist 102">Cybersecurity Specialist-102</option>
+                <option value="Network Administrato">Network Administrator-101</option>
+                <option value="Cybersecurity Specia">Cybersecurity Specialist-102</option>
             </select>
             <br>
             <br>
@@ -79,32 +79,30 @@
             echo "<section><h1>All EOIs</h1><div id='EOISection'><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
-                <th>Other Skills</th><th>Date Submitted</th></tr>";
+                <th>Other Skills</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
-                echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
-                echo "<td>" . $row['FirstName'] . "</td>";
-                echo "<td>" . $row['LastName'] . "</td>";
-                echo "<td>" . $row['DateOfBirth'] . "</td>";
-                echo "<td>" . $row['StreetAddress'] . "</td>";
-                echo "<td>" . $row['Suburb'] . "</td>";
-                echo "<td>" . $row['State'] . "</td>";
-                echo "<td>" . $row['Postcode'] . "</td>";
-                echo "<td>" . $row['Email'] . "</td>";
-                echo "<td>" . $row['PhoneNumber'] . "</td>";
-                if (!empty($row['Skill1'])) {
-                    echo "<td><ul>";
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Skill$i"])) {
-                            echo "<li>" . $row["Skill$i"] . "</li>";
-                        }
+                echo "<td>" . $row['STATUS'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['firstName'] . "</td>";
+                echo "<td>" . $row['lastName'] . "</td>";
+                echo "<td>" . $row['dateOfBirth'] . "</td>";
+                echo "<td>" . $row['streetAddress'] . "</td>";
+                echo "<td>" . $row['suburbTown'] . "</td>";
+                echo "<td>" . $row['state'] . "</td>";
+                echo "<td>" . $row['postcode'] . "</td>";
+                echo "<td>" . $row['emailAddress'] . "</td>";
+                echo "<td>" . $row['phoneNumber'] . "</td>";
+                echo "<td><ul>";
+                for ($i = 1; $i <= 5; $i++) {
+                    if (!empty($row["skill$i"])) {
+                        echo "<li>" . $row["skill$i"] . "</li>";
                     }
-                    echo "</ul></td>";
                 }
-                echo "<td>" . $row['OtherSkills'] . "</td>";
-                echo "<td>" . $row['DateSubmitted'] . "</td>";
+                echo "</ul></td>";
+                echo "<td>" . $row['otherSkills'] . "</td>";
+
                 echo "</tr>";
             }
             echo "</table></div></section>";
@@ -127,32 +125,29 @@
             echo "<section><h1>All " . $number . " EOIs.</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
-                <th>Other Skills</th><th>Date Submitted</th></tr>";
+                <th>Other Skills</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
-                echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
-                echo "<td>" . $row['FirstName'] . "</td>";
-                echo "<td>" . $row['LastName'] . "</td>";
-                echo "<td>" . $row['DateOfBirth'] . "</td>";
-                echo "<td>" . $row['StreetAddress'] . "</td>";
-                echo "<td>" . $row['Suburb'] . "</td>";
-                echo "<td>" . $row['State'] . "</td>";
-                echo "<td>" . $row['Postcode'] . "</td>";
-                echo "<td>" . $row['Email'] . "</td>";
-                echo "<td>" . $row['PhoneNumber'] . "</td>";
-                if (!empty($row['Skill1'])) {
-                    echo "<td><ul>";
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Skill$i"])) {
-                            echo "<li>" . $row["Skill$i"] . "</li>";
-                        }
+                echo "<td>" . $row['STATUS'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['firstName'] . "</td>";
+                echo "<td>" . $row['lastName'] . "</td>";
+                echo "<td>" . $row['dateOfBirth'] . "</td>";
+                echo "<td>" . $row['streetAddress'] . "</td>";
+                echo "<td>" . $row['suburbTown'] . "</td>";
+                echo "<td>" . $row['state'] . "</td>";
+                echo "<td>" . $row['postcode'] . "</td>";
+                echo "<td>" . $row['emailAddress'] . "</td>";
+                echo "<td>" . $row['phoneNumber'] . "</td>";
+                echo "<td><ul>";
+                for ($i = 1; $i <= 5; $i++) {
+                    if (!empty($row["skill$i"])) {
+                        echo "<li>" . $row["skill$i"] . "</li>";
                     }
-                    echo "</ul></td>";
                 }
-                echo "<td>" . $row['OtherSkills'] . "</td>";
-                echo "<td>" . $row['DateSubmitted'] . "</td>";
+                echo "</ul></td>";
+                echo "<td>" . $row['otherSkills'] . "</td>";
                 echo "</tr>";
             }
             echo "</table></div></section>";
@@ -200,32 +195,30 @@
             echo "<section><h1>All EOIs for " . $firstName . " " . $lastName . "</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
-                <th>Other Skills</th><th>Date Submitted</th></tr>";
+                <th>Other Skills</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
-                echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
-                echo "<td>" . $row['FirstName'] . "</td>";
-                echo "<td>" . $row['LastName'] . "</td>";
-                echo "<td>" . $row['DateOfBirth'] . "</td>";
-                echo "<td>" . $row['StreetAddress'] . "</td>";
-                echo "<td>" . $row['Suburb'] . "</td>";
-                echo "<td>" . $row['State'] . "</td>";
-                echo "<td>" . $row['Postcode'] . "</td>";
-                echo "<td>" . $row['Email'] . "</td>";
-                echo "<td>" . $row['PhoneNumber'] . "</td>";
-                if (!empty($row['Skill1'])) {
-                    echo "<td><ul>";
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Skill$i"])) {
-                            echo "<li>" . $row["Skill$i"] . "</li>";
-                        }
+                echo "<td>" . $row['STATUS'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['firstName'] . "</td>";
+                echo "<td>" . $row['lastName'] . "</td>";
+                echo "<td>" . $row['dateOfBirth'] . "</td>";
+                echo "<td>" . $row['streetAddress'] . "</td>";
+                echo "<td>" . $row['suburbTown'] . "</td>";
+                echo "<td>" . $row['state'] . "</td>";
+                echo "<td>" . $row['postcode'] . "</td>";
+                echo "<td>" . $row['emailAddress'] . "</td>";
+                echo "<td>" . $row['phoneNumber'] . "</td>";
+                echo "<td><ul>";
+                for ($i = 1; $i <= 5; $i++) {
+                    if (!empty($row["skill$i"])) {
+                        echo "<li>" . $row["skill$i"] . "</li>";
                     }
-                    echo "</ul></td>";
                 }
-                echo "<td>" . $row['OtherSkills'] . "</td>";
-                echo "<td>" . $row['DateSubmitted'] . "</td>";
+                echo "</ul></td>";
+
+                echo "<td>" . $row['otherSkills'] . "</td>";
                 echo "</tr>";
             }
             echo "</table></div></section>";
@@ -255,32 +248,29 @@
             echo "<section><h1>All EOIs for EOI number " . $EOInumber . ".</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
-                <th>Other Skills</th><th>Date Submitted</th></tr>";
+                <th>Other Skills</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
-                echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
-                echo "<td>" . $row['FirstName'] . "</td>";
-                echo "<td>" . $row['LastName'] . "</td>";
-                echo "<td>" . $row['DateOfBirth'] . "</td>";
-                echo "<td>" . $row['StreetAddress'] . "</td>";
-                echo "<td>" . $row['Suburb'] . "</td>";
-                echo "<td>" . $row['State'] . "</td>";
-                echo "<td>" . $row['Postcode'] . "</td>";
-                echo "<td>" . $row['Email'] . "</td>";
-                echo "<td>" . $row['PhoneNumber'] . "</td>";
-                if (!empty($row['Skill1'])) {
-                    echo "<td><ul>";
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Skill$i"])) {
-                            echo "<li>" . $row["Skill$i"] . "</li>";
-                        }
+                echo "<td>" . $row['STATUS'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['firstName'] . "</td>";
+                echo "<td>" . $row['lastName'] . "</td>";
+                echo "<td>" . $row['dateOfBirth'] . "</td>";
+                echo "<td>" . $row['streetAddress'] . "</td>";
+                echo "<td>" . $row['suburbTown'] . "</td>";
+                echo "<td>" . $row['state'] . "</td>";
+                echo "<td>" . $row['postcode'] . "</td>";
+                echo "<td>" . $row['emailAddress'] . "</td>";
+                echo "<td>" . $row['phoneNumber'] . "</td>";
+                echo "<td><ul>";
+                for ($i = 1; $i <= 5; $i++) {
+                    if (!empty($row["skill$i"])) {
+                        echo "<li>" . $row["skill$i"] . "</li>";
                     }
-                    echo "</ul></td>";
                 }
-                echo "<td>" . $row['OtherSkills'] . "</td>";
-                echo "<td>" . $row['DateSubmitted'] . "</td>";
+                echo "</ul></td>";
+                echo "<td>" . $row['otherSkills'] . "</td>";
                 echo "</tr>";
             }
             echo "</table></div></section>";
@@ -331,32 +321,29 @@
             echo "<section><h1>All " . $number . " EOIs.</h1><div id='EOISection'><table id='EOITable'>";
             echo "<tr><th>EOI Number</th><th>Status</th><th>Job Reference</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th>
                 <th>Street Address</th><th>Suburb</th><th>State</th><th>Postcode</th><th>Email</th><th>PhoneNumber</th><th>Skills</th>
-                <th>Other Skills</th><th>Date Submitted</th></tr>";
+                <th>Other Skills</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row['EOInumber'] . "</td>";
-                echo "<td>" . $row['Status'] . "</td>";
-                echo "<td>" . $row['JobReferenceNumber'] . "</td>";
-                echo "<td>" . $row['FirstName'] . "</td>";
-                echo "<td>" . $row['LastName'] . "</td>";
-                echo "<td>" . $row['DateOfBirth'] . "</td>";
-                echo "<td>" . $row['StreetAddress'] . "</td>";
-                echo "<td>" . $row['Suburb'] . "</td>";
-                echo "<td>" . $row['State'] . "</td>";
-                echo "<td>" . $row['Postcode'] . "</td>";
-                echo "<td>" . $row['Email'] . "</td>";
-                echo "<td>" . $row['PhoneNumber'] . "</td>";
-                if (!empty($row['Skill1'])) {
-                    echo "<td><ul>";
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Skill$i"])) {
-                            echo "<li>" . $row["Skill$i"] . "</li>";
-                        }
+                echo "<td>" . $row['STATUS'] . "</td>";
+                echo "<td>" . $row['jobReferenceNumber'] . "</td>";
+                echo "<td>" . $row['firstName'] . "</td>";
+                echo "<td>" . $row['lastName'] . "</td>";
+                echo "<td>" . $row['dateOfBirth'] . "</td>";
+                echo "<td>" . $row['streetAddress'] . "</td>";
+                echo "<td>" . $row['suburbTown'] . "</td>";
+                echo "<td>" . $row['state'] . "</td>";
+                echo "<td>" . $row['postcode'] . "</td>";
+                echo "<td>" . $row['emailAddress'] . "</td>";
+                echo "<td>" . $row['phoneNumber'] . "</td>";
+                echo "<td><ul>";
+                for ($i = 1; $i <= 5; $i++) {
+                    if (!empty($row["skill$i"])) {
+                        echo "<li>" . $row["skill$i"] . "</li>";
                     }
-                    echo "</ul></td>";
                 }
-                echo "<td>" . $row['OtherSkills'] . "</td>";
-                echo "<td>" . $row['DateSubmitted'] . "</td>";
+                echo "</ul></td>";
+                echo "<td>" . $row['otherSkills'] . "</td>";
                 echo "</tr>";
             }
             echo "</table></div></section>";

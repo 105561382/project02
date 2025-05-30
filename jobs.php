@@ -81,7 +81,7 @@
                     
                     echo "<br>";
                     
-                    echo '<a href="apply.html" title="Go to application page"><strong>Apply Now!</strong></a>';
+                    echo '<a href="apply.php" title="Go to application page"><strong>Apply Now!</strong></a>';
                     
                     echo "</section><br><br>";
                 }
