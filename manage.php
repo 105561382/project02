@@ -15,7 +15,7 @@
     <hr>
     <h1>EOI Management Page</h1>
     <nav>
-        <form method="GET" action="retrieve_eoi.php">
+        <form method="POST" action="retrieve_eoi.php">
             <button type="submit" value="True" name="ListAllEOIs">List EOIs</button>
             <button type="submit" value="True" name="ListPositionEOIs">List EOIs of a position</button>
             <button type="submit" value="True" name="ListApplicantEOIs">List EOI of an applicant</button>
@@ -32,3 +32,4 @@
     ?>
 
 </body>
+</html>
