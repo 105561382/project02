@@ -368,4 +368,13 @@
     // Redirect to manage.php and pass the output
     header("Location: manage.php?output=" . urlencode($output));
     exit();
+
+     
+
+
+
+
+
+
+
 ?>
