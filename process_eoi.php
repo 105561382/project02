@@ -150,7 +150,7 @@ if (!$conn->query($sqlCreateTable)) {
 $skillVars = array_pad($requiredSkillsArr, 5, null);
 list($skill1, $skill2, $skill3, $skill4, $skill5) = $skillVars;
 
-// Prepare insert statement
+// Prepare insert statement - Enhancement PREVENTS MYSQL Injection 
 $stmt = $conn->prepare("INSERT INTO eoi (Status, JobReferenceNumber, FirstName, LastName, DateOfBirth, StreetAddress, SuburbTown, State, Postcode, EmailAddress, PhoneNumber, Skill1, Skill2, Skill3, Skill4, Skill5, OtherSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
