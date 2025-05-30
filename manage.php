@@ -2,23 +2,20 @@
 <html lang="en">
 <head>
    <?php
-        require_once("settings.php");
-        if(isset($_POST['username']) && isset($_POST['password'])) {
-            session_start();
-            $username = mysqli_real_escape_string($conn, $_POST['username']);
-            $password = mysqli_real_escape_string($conn, $_POST['password']);
-            $sql = "SELECT * FROM login WHERE username = '$username' AND password = '$password' LIMIT 1";
-            $result = mysqli_query($conn, $sql);
-            if ($result && mysqli_num_rows($result) === 1) {
-                $_SESSION['is_manager'] = true;
-            } else {
-                echo "<script>alert('Invalid management username or password. Access denied.'); window.location.href='index.php';</script>";
-                exit();
-            }
+    require_once("settings.php");
+    session_start();
 
-        } else {header("Location: index.php");}
-        include 'header.inc';
+    if (!$conn) {
+        echo "<script>alert('Database connection failed!'); window.location.href='index.php';</script>";
+        exit();
+    }
+
+    if (!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
+        echo "<script>alert('Please log in first!'); window.location.href='login.php';</script>";
+        exit();
+    }
     ?>
+
   <link rel="stylesheet" href="styles/styles.css">
   <title>EOI Management</title>
 </head>

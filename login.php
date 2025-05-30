@@ -3,26 +3,29 @@ require_once("settings.php");
 session_start();
 
 if (!$conn) {
-    die("<script>alert('Login database not installed in database! e.i. Get it from Ethan'); window.location.href='index.php';</script>");
+    echo "<script>alert('Login database not installed!'); window.location.href='index.php';</script>";
+    exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    
-    $sql = "SELECT * FROM login WHERE username = '$username' AND password = '$password' LIMIT 1";
-    $result = mysqli_query($conn, $sql);
-    if ($result && mysqli_num_rows($result) === 1) {
-        $_SESSION['is_manager'] = true;
+if (isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $stmt = $conn->prepare("SELECT * FROM login WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['password'] = $user['password'];
         header("Location: manage.php");
         exit();
     } else {
-        echo "<script>alert('Invalid management username or password. Access denied.'); window.location.href='index.php';</script>";
+        echo "<script>alert('Invalid username or password'); window.location.href='index.php';</script>";
         exit();
     }
 } else {
-    header("Location: index.php");
+    echo "<script>alert('Please enter username and password'); window.location.href='index.php';</script>";
     exit();
 }
 ?>

@@ -1,5 +1,6 @@
 <script>
-    function myFunction() {
+    function myFunction(event) {
+        if(event) event.preventDefault();
         document.getElementById('loginModal').style.display = 'block';
     }
 
@@ -28,8 +29,7 @@
     <a href="about.php" title="Go to about page"><strong>ABOUT</strong></a>
     <a href="jobs.php" title="Go to position description page">POSITIONS</a>
     <a href="apply.php" title="Go to application page"><strong>APPLICATIONS</strong></a>
-    <a href="manage.php" title="Go to eoi management page" onclick="myFunction()">MANAGEMENT</a>
+    <a href="#" title="Go to eoi management page" onclick="myFunction(event)">LOGIN</a>
     <a href="enhancements.php" title="Go to enhancements page">Enhancements</a>
-    <p id="demo"></p>
     <a href="mailto:info@TechShield.com.au" title="Email Us">EMAIL</a>
 </nav>
